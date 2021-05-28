@@ -1,0 +1,850 @@
+<html>
+<head>
+<title>VDragon home page</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+
+</head>
+
+<body bgcolor="#000066" text="#FFFF00" link="#00FF00" vlink="#009900" alink="#99FF00" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<font color="#FFFFFF" face="Verdana, Arial, Helvetica, sans-serif" size="2">Программирование
+  графики</font></b></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">--------------------------------------------------------------------------------</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><b>Содержание </b></font></p>
+<blockquote>
+  <p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><a href="#Begin">Вступление
+    </a><br>
+    <a href="#Evolution">Немного об эволюции компьютерной графики </a><br>
+    <a href="#adapters">О видео картах </a><br>
+    <a href="#pix">Вывод точки </a><br>
+    <a href="#pix2">Поумневшая точка</a> <br>
+    <a href="#cls">Очистка экрана</a> <br>
+    <a href="#buf">Буферизация экрана </a><br>
+    <a href="#win">Окна (View port) </a><br>
+    <a href="#pal">Работа с палитрой </a></font></p>
+</blockquote>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">--------------------------------------------------------------------------------</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><b><a name="Begin"></a>Вступление</b></font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Речь в этой статье
+  пойдет об основах компьютерной графики. На сегодняшний день (2000 год) компьютерная
+  графика достигла столь высокого уровня, что начинающему программисту сложно
+  разобраться в происходящем, и это зачастую отбивает всю охоту программировать
+  компьютерную графику. Ко всему этому добавляется нехватка хоть кокой ни будь
+  информации по этому вопросу не изобилующей сложными терминами и невнятными описаниями
+  самого процесса программирования, к тому же героические фанаты MS WINDOWS дают
+  совсем на мой взгляд бессмысленные рекомендации о использовании готовых библиотек
+  для полноценного использования которых требуется не меньшее знание программирования
+  чем для самостоятельно программирования видео адаптера. Поэтому я решил написать
+  сие творение, дабы новички, да и не только смогли понять принципы программирования
+  графики на IBM PC.</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br>
+  --------------------------------------------------------------------------------</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><b><a name="Evolution"></a>Немного
+  об эволюции компьютерной графики </b></font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">С начала не было
+  ни чего, и все выводилось на перфоленту. <br>
+  Затем что-то появилось, но я думаю, это что-то не заслуживает внимания <br>
+  Потом появилась MDA (Монохромный дисплейный адаптер) который позволял выводить
+  черно-белый текст. <br>
+  Но текста оказалось не достаточно, и появился CGA (Цветной графический адаптер),
+  этот девайс уже позволял выводить графику по точкам, правда в четырех цветах.<br>
+  Затем изобрели HERCULES (или до), о его характеристиках я точно не знаю, но
+  в общем-то тоже лажа. <br>
+  Но и четырех цветной CGA графики народу оказалось маловато, и тогда стараниями
+  фирмы IBM собрали EGA адаптер, который назвали (Расширенный графический адаптер)
+  и он кроме поддержки всего что было раньше позволял выводить графику в расширенных
+  режимах с скажем так высоким разрешением 640*400, и выдавал 16 цветов из палитры
+  в 64 цвета. <br>
+  Дальше понеслось, для компьютеров PS/2 создали MCGA адаптер, который позволял
+  выводить графику в 256 цветах, правда было маловато оттенков. <br>
+  Я точно не знаю, но похоже MCGA создала не IBM, и по этому этот гигант решил
+  перехватить рынок, создав VGA адаптер (Видео графическая матрица), который на
+  корню похоронил MCGA, и стал основным стандартом. Основными его характеристиками
+  стали возможность выбора цвета из 262143 оттенков для всех режимов, вывод на
+  экран сразу 256 различных цветов, ну и главной фишкой оказался режим 320*200
+  256 цветов. (А еще если его юзать с адаптером HERCULES можно было достичь разрешения
+  1024*768) <br>
+  На основе VGA адаптера был создан SVGA адаптер (Супер видео графическая матрица)
+  который на сегодняшний день (2000г.) остается одним из основных, и позволяет
+  выводить графику в огромных разрешениях (По сравнению с EGA) и с глубиной цвета
+  до 16777215 оттенков, при этом без ограничения 256 цветами. <br>
+  Вот так примерно выглядит эволюция графики на PC. Говоря о бедующем, увеличения
+  количества цветов нам не грозит, и сейчас основным направлением развития видео
+  адаптеров стало увеличения скорости обработки данных, увеличение видео памяти
+  и акселерация основных видео функций и 3D графики.</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br>
+  --------------------------------------------------------------------------------</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><b><a name="adapters"></a>О
+  видео картах</b></font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">На сегодняшний
+  день (2000г.) на рынке появилось много графических адаптеров, которые так или
+  иначе пытаются нам нахваливать и давать советы о том что именно его мы должны
+  купить. При этом используются страшные заклинания как PCI, AGP, 2D/3D Акселерация
+  и т.д. и т.п. Если вы профи, то да, это вам скажет о многом, но если нет, как
+  разобраться что все это значит и почему GeForce с 64мб DDRDRAM круче S3 3d/2X
+  с 8Мб, чем AGP лучше PCI и т.д. и т.п. Начнем по немножку, AGP, PCI, ISA, это
+  слоты на материнской плате, в которые втыкаются всякие платы (Звук, Видео, Модем
+  ...). Главное различие этих слотов, это скорость обмена данными между устройством
+  и процессором, по этому чем лучше у вас слот, тем быстрее работает ваша видео
+  карта. ISA - Этот разъем использовался еще на 80286 машинах, а может и раньше.
+  Где-то в 90х годах его понемножку начал вытеснять разъем PCI (Бедующие компьютерной
+  техники (см. кино ХАКЕРЫ)) который работал на порядок быстрее, но в погоне за
+  выгодой, да и в целях еще большего разгона видео карт INTEL выпускает в свет
+  AGP стандарт ориентированный на графические карты который позволяет проводить
+  обмен данными между (видео карта) - (процессор) в обход системной шины, что
+  увеличивает производительность еще в несколько раз. Так что для видео карт на
+  данный момент (2000г.) AGP - стандарт является одним из самых наилучших, хотя
+  и PCI еще не потерял свою актуальность.</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Видео память -
+  многие считаю что это показатель крутости видео адаптера, но они заблуждаются.
+  Если они используют карту без 3D ускорения, то огромное количество видео памяти
+  им и не потребуется, по этому я не понимаю смысла покупки простой видео карты
+  с 32Мб видео памяти, когда за такие же деньги можно взять VOODOO с 16 Мб. Для
+  того, чтобы понять сколько видео памяти вам нужно, вы должны разобраться в принципе
+  ее распределения в видео адаптере. В 32 битно графике (максимальное количество
+  цветов) на каждую точку (Пиксель) на экране отводится 4 байта, в режиме 1600*1280
+  мы имеем 2048000 точек, перемножив это на 4 мы получим число нужных нам байт
+  для хранения такого кол-ва информации 8192000байт, далее переведем все это в
+  мегабайты (разделим на 1024 два раза) получим примерно 8 Мб, для работы в WINDOWS
+  нужно чтобы этот объем покрывался 2 раза, то есть нам нужно 16 Мб видео память
+  и 20 дюймовый монитор, но самое интересное то, что вы не такое разрешение использовать
+  не когда не будете, т.к. оно вам и не надо, стандартное разрешение экрана где-то
+  1024*768 24бит (True Color) в Windows и 800*600 в играх, исходя из этого посчитаем
+  сикока видео памяти нам нужно для удовлетворения этих потребностей</font></p>
+<p align="center"><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br>
+  1024*768*3*2 = 4.5 Мб </font></p>
+<p align="center"><font face="Verdana, Arial, Helvetica, sans-serif" size="1">(В
+  24 битной графике на 1 пиксель уходит 3 байта) </font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Видео карта с 6Мб
+  это изврат, но можно сделать вывод, что 8Мб нам хватит выше крыши. </font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Но сегодня мало
+  карт с просто 2D ускорением, а карты с большим количеством памяти, ну не могут
+  не претендовать на 3D ускорение, и вопят что такое кол-во памяти им нужно для
+  хранения текстур. Тут конечно сложно спорить, все, что у нас остается от вывода
+  графики, программа использует под текстуры, но кто мне объяснит, какое количество
+  и каких текстур нужно загнать в 3D ускоритель, со скажем 32Мб видео памяти,
+  в котором при режиме 800*600 24бита остается свободными более 28Мб. </font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Еще одним показателем
+  качества видео памяти является ее тип, в простых видео картах используется памяти
+  VRAM, но с ускорением карты, требуется более быстрая память, поэтому в современных
+  картах используется SDRAM, которая гораздо быстрее чем VRAM, ну и SDRAM не предел,
+  сегодня появился стандарт DDRDRAM, который используется в высокопроизводительных
+  3D ускорителях типа GeForce2. Скорость памяти, это один из ее основных показателей,
+  потому что при работе в режиме 320*200 вам хватит и VRAM, а в режимах скажем
+  1024*768 карта должна работать с 10 кратным ускорением для того чтобы достичь
+  подобных результатов, и это для режимов с 256 цветами.</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Ну ладно, хватит
+  о преимуществах и недостатках, в конце приведем классификацию карт. </font></p>
+<blockquote>
+  <p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Для бедных -
+    4/2/1 Мб видео памяти VRAM, что-то типа TRIDENT, CIRUS LOGICK или что-то подобное.
+    <br>
+    Для офиса - 8Мб карта с памятью SDRAM, с 2D ускорением, S3 Virge или Matrox
+    <br>
+    Игровая - RivaTNT2, VooDoo 3000 или выше. Лучший вариант объединяющий 2D и
+    3D ускорение. <br>
+    Рулез - GeForce 2, 32(64)Mb DDRDRAM </font></p>
+</blockquote>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">--------------------------------------------------------------------------------</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><b><a name="pix"></a>Вывод
+  точки</b></font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Если вы хоть немного
+  разберитесь в программировании, то вы наверняка использовали стандартные модули
+  для вывода графики как GRAPH. Его прототип есть в Ц и в Паскале. Он дает много
+  возможностей, но не блещет скоростью вывода и мобильностью, требует BGI файл,
+  и в стандартном варианте позволяет работать только с графикой 16-256 цветов
+  и меньше. Ко всему этому, когда смотришь какую-нибудь ДЕМУ, там творят такое,
+  что с модулем граф не когда не сделать.</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Первое что нам
+  нужно сделать, это установить нужный нам видео режим. Делается это путем использования
+  прерывания процессора Int 10h (16), где в регистр AH заносим 0, а в регистр
+  AL-номер видео режима. </font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Program
+  SetMode320*200_256;<br>
+  Uses Dos;<br>
+  Var Rp:Registers; {Создаем переменную регистров}<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Rp.Ah:=0;
+    <br>
+    Rp.Al:=$13; {Номер видео режима, 320*200 256 цветов}<br>
+    Intr($10,Rp); {вызываем прерывание}</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End.</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br>
+  Через это прерывание можно установить все VGA видео режимы, но самый полезный
+  из них это режим $13. С ним просто работать и в нашем распоряжении 256 цветов.
+  Вернуть экран обратно в текстовый режим можно путем вызова того-же прерывания
+  но со значением $3 в регистре Al</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Program
+  SetTextMode;<br>
+  Uses Dos;<br>
+  Var Rp:Registers; {Создаем переменную регистров}<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Rp.Ah:=0;
+    <br>
+    Rp.Al:=$3; {Номер стандартного текстового режима, 80*25}<br>
+    Intr($10,Rp); {вызываем прерывание}</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End.</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Установив режим
+  мы теперь должны что-то вывести на экран, делается это просто. Информация о
+  содержимом экрана храниться в памяти по адресу $A000 для графики, и $B800 для
+  текста. В Паскале для этого есть две переменные SegA000 и SegB800. Желательно
+  использовать именно их, по тому что в защищенном режиме памяти меняется адресация,
+  и в этих переменных храниться нужное нам значение сегмента. Вот пример вывода
+  чяго ни будь на экран.</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Program
+  Demo1;<br>
+  Uses Dos,Crt;<br>
+  Var Rp:Registers;<br>
+  I:Integer; <br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Rp.Ah:=0;
+    <br>
+    Rp.Al:=$3; {Номер стандартного текстового режима, 80*25}<br>
+    Intr($10,Rp); {вызываем прерывание}<br>
+    {Выведем что-нибудь на экран}<br>
+    For i:=0 to 64000 do </font></p>
+  <blockquote>
+    <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Mem[SegA000,i]:=i;</font></p>
+  </blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Readkey;</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End.
+  </font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Экран заполниться
+  разноцветными пикселями. Что же произошло. В сегменте SegA000 память отведена
+  для работы с видео адаптером, и когда мы изменяем там значение, оно сразу же
+  изменяется в видео памяти. Данные там храниться построчно, т.е. для режима 320*200
+  256 цветов первые 320 байт соответствуют первой строке на экране, следующие
+  320 байт - это вторая строка, и т.д. и т.п. до 200 строки. Теперь не сложно
+  посчитать положение точки на экране, Mem[Y*320+X]:=Col, и если мы по этому смещению
+  установим нужный нам байтик в значение нужного нам цвета, то на экране сразу
+  отобразиться точка, ну и получить точку можно также, но только не установив
+  байт, а прочитав его Col:=Mem[Y*320+X]; </font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Program
+  Demo2;<br>
+  {Сделаем программу более мобильной, сделаем все в виде процедур}<br>
+  Uses Dos,Crt;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Установим
+  видео режим}<br>
+  Procedure SetMode(N:Byte)<br>
+  Var Rp:Registers;<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Rp.Ax:=N;
+    {Занесем номер режима}<br>
+    Intr($10,Rp); {Вызовем прерывание}</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Рисуем
+  точку на экран}<br>
+  Procedure Pix(X,Y:Integer;Col:Byte);<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Mem[SegA000:Y*320+X]:=Col;</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Получаем
+  точку с экран}<br>
+  Function GetPix(X,Y:Integer):Byte;<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">GetPIx:=Mem[SegA000:Y*320+X];</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">SetMode($13);
+    {Установим режим 320*200 256 цветов}<br>
+    Pix(100,100,15); {Поставим точку на экране по координатам 100,100 цветом 15}<br>
+    Readkey;<br>
+    SetMode($3);</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End.</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br>
+  --------------------------------------------------------------------------------</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><b><a name="pix2"></a>Поумневшая
+  точка</b></font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Отлично, точку
+  мы поставили, но теперь проведем эксперимент, поставим точку по координатам
+  (321,10), по идеи точка должна попасть за экран, но у нас она выскакивает с
+  другой стороны экрана, как же этого можно избежать. А очень просто, нужно проверять
+  координаты точки перед ее выводом, а делается это так. </font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Program
+  Demo3;<br>
+  Uses Dos,Crt;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Установим
+  видео режим}<br>
+  Procedure SetMode(N:Byte)<br>
+  Var Rp:Registers;<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Rp.Ax:=N;<br>
+    Intr($10,Rp); </font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Рисем
+  точку на экран}<br>
+  Procedure Pix(X,Y:Integer;Col:Byte);<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Первое
+    берем X и Y как Word, если вдруг придет отрицательное число, то<br>
+    у нас получиться нечто более 32768, этим мы и воспользуемся}<br>
+    If (Word(X)&lt;320) And (Word(Y)&lt;200) Then Mem[SegA000:Y*320+X]:=Col;</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Получаем
+  точку с экран}<br>
+  Function GetPix(X,Y:Integer):Byte;<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">If
+    (Word(X)&lt;320) And (Word(Y)&lt;200) Then GetPIx:=Mem[SegA000:Y*320+X];</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">SetMode($13);
+    {Установим режим 320*200 256 цветов}<br>
+    Pix(100,100,15); {Поставим точку на экране по координатам 100,100 цветом 15}<br>
+    Pix(321,100,15); {Поставим точку на экране по координатам 100,100 цветом 15}<br>
+    Readkey;<br>
+    SetMode($3);</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End.</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Теперь точка не
+  выскакивает за экран, а значит мы можем смело рисовать по любым координатам.
+  </font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br>
+  --------------------------------------------------------------------------------</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><b><a name="cls"></a>Очистка
+  экрана</b></font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Теперь решим следующую
+  задачу, как очистить экран. Первое что приходит в голову, в цикле поставить
+  везде точки одного цвета, но для полного экрана это не очень рационально, т.к.
+  мы делаем 64000 сравнения координат точки, а нам просто надо установить все
+  байты в сегменте $A000, в нужное нам значение. Все это решается очень просто,
+  в Паскале есть функция заполнения данных под названием FillChar, которая эквивалентна
+  STOSB на ассемблере. Делается это так;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Program
+  Demo4;<br>
+  Uses Dos,Crt;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Установим
+  видео режим}<br>
+  Procedure SetMode(N:Byte)<br>
+  Var Rp:Registers;<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Rp.Ax:=N;<br>
+    Intr($10,Rp);</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Procedure
+  Cls(Col:Byte);<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Устанавливаем
+    64000 байт в сегменте $A000 по смещению 0 байт в значение Col}<br>
+    FillChar(Mem[SegA000:0],64000,Col);</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">SetMode($13);
+    {Установим режим 320*200 256 цветов}<br>
+    Repeat</font></p>
+  <blockquote>
+    <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Cls(Random($FF));</font></p>
+  </blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Until
+    Keypressed;<br>
+    Readkey;<br>
+    SetMode($3);</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End.
+  </font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br>
+  --------------------------------------------------------------------------------</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><b><a name="buf"></a>Буферизация
+  экрана</b></font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Хоть вывод графики
+  у нас и быстрый, но все равно, если у нас будет что-то с полноэкранной прорисовкой,
+  то все это, при прямом выводе на экран будет заметно. Для того, чтобы этого
+  избежать нам нужно использовать буфер в памяти, делается это примерно так, резервируем
+  64Kb памяти, и выводим не в сегмент $A000, а в сегмент нашего буфера, на который
+  будет указывать специальная переменная, скажем VideoSEG. Заодно решаем, что
+  нам нужно.</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">1.Переделаем все
+  выше приведенные исподники в модуль</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">2.Для работы с
+  буфером нам нужно </font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Переменную указатель
+  на вывод <br>
+  Процедуру создания буфера <br>
+  Процедуру вывода буфера <br>
+  Процедура удаления буфера <br>
+  Процедура копирования буфер <br>
+  Процедуры установки вывода в буфер и на экран</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">3.Немного переписать
+  процедуру вывода точки</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Сказано, сделано
+  ...</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Unit
+  MYVGA;<br>
+  Interface</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Const</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">ScreenXres
+    = 320; {Ширина экрана в пикселях}<br>
+    ScreenYres = 200; {Высота экрана в пикселях}</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Var
+  VideoSeg:Word; {Сегмент вывода}</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">
+    Procedure SetMode(N:Byte); {Установка видео режима}<br>
+    Procedure Pix(X,Y:Integer;Col:Byte); {Вывести точку}<br>
+    Procedure GetPix(X,Y:Integer):Byte; {Получить точку}<br>
+    Procedure Cls(Col:Byte); {Очистка экрана}</font></p>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">
+    Procedure NewB(P:Pointer); {Создать новый буфер в памяти}<br>
+    Procedure DelB(P:Pointer); {Удалить буфер из памяти}<br>
+    Procedure SetB(P:Pointer); {Установить вывод в буфер}<br>
+    Procedure SetS; {Установить вывод на экран}<br>
+    Procedure OutB(P:Pointer); {Вывести буфер на экран}<br>
+    Procedure GetB(P:Pointer); {Копировать экран в буфер}<br>
+    Procedure CopyBB(Src,Dest:Pointer); {Копировать буфер в буфер}</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Implementation</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Создаем
+  новый буфер}<br>
+  Procedure NewB(P:Pointer); <br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">GetMem(P,$FFFF);
+    {Берем $FFFF байт под буфер в динамической памяти}</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Удаляем
+  буфер из памяти}<br>
+  Procedure DelB(P:Pointer);<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">FreeMem(P,64000);
+    {Освобождаем 64000 байт динамической памяти}</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Установить
+  вывод в буфер}<br>
+  Procedure SetB(P:Pointer);<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">VideoSeg:=Seg(P^);
+    {Видео сегмент равен сегменту нашего буфера}</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;
+  </font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Установить
+  вывод на экран}<br>
+  Procedure SetS; <br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">VideoSeg:=SegA000;
+    {Видео сегмент равен сегменту экрана}</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Копируем
+  буфер на экран}<br>
+  Procedure OutB(P:Pointer);<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Move(P^,Mem[SegA000:0],64000);
+    {Копируем 64000 байт из памяти по адресу буфера, в видео сегмент}</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Копируем
+  экран в буфер}<br>
+  Procedure GetB(P:Pointer);<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Move(Mem[SegA000:0],P,64000);
+    {Тоже что и OutB, но на оборот}</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Копируем
+  буфер в буфер}<br>
+  Procedure CopyBB(Src,Dest:Pointer);<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Move(Src^,Dest^,64000);
+    {Копируем буфер в буфер}</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Установка
+  видео режима} <br>
+  Procedure SetMode(N:Byte)<br>
+  Var Rp:Registers;<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Rp.Ax:=N;
+    {Занесем номер режима}<br>
+    Intr($10,Rp); {Вызовем прерывание}</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Очистка
+  экрана}<br>
+  Procedure Cls(Col:Byte);<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Устанавливаем
+    64000 байт в сегменте $A000 по смещению 0 байт в значение Col}<br>
+    FillChar(Mem[VideoSeg:0],64000,Col);</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Рисем
+  точку на экран}<br>
+  Procedure Pix(X,Y:Integer;Col:Byte);<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Первое
+    берем X и Y как Word, если вдруг придет отрицательное число, то у нас получиться
+    нечто более 32768, этим мы и воспользуемся}<br>
+    If (Word(X)&lt;320) And (Word(Y)&lt;200) Then Mem[VideoSeg:Y*320+X]:=Col;</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;
+  </font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Получаем
+  точку с экран}<br>
+  Function GetPix(X,Y:Integer):Byte;<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">If
+    (Word(X)&lt;320) And (Word(Y)&lt;200) Then GetPIx:=Mem[VideSeg:Y*320+X];</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">VideoSeg:=SegA000;
+    {Устанавливаем вывод на экран}</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End.</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">*********************************************************************************</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Program
+  Demo5;<br>
+  Uses MyVGA,CRT;<br>
+  Var <br>
+  Bufer:Pointer; {Переменная буфера}<br>
+  I,J,K:Integer; </font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">
+    Writeln('Вывод графики с использованием буфера');<br>
+    Readkey;<br>
+    SetMode($13);<br>
+    NewB(Bufer); {Создаем буфер в динамической памяти}<br>
+    SetB(Bufer); {Вывод в буфер}<br>
+    Repeat</font></p>
+  <blockquote>
+    <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">For
+      j:=0 to 199 do<br>
+      For i:=0 to 319 do</font></p>
+    <blockquote>
+      <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Pix(i,j,i+j+k);</font></p>
+    </blockquote>
+    <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Inc(K);<br>
+      OutB(Bufer); {Выводим буфер на экран}</font></p>
+  </blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Until
+    Keypressed; <br>
+    DelB(Bufer); {Удаляем буфер из динамической памяти}<br>
+    SetS;<br>
+    Readkey<br>
+    SetMode($3);</font></p>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">
+    Writeln('Вывод графики с без использования буфера');<br>
+    Readkey;<br>
+    SetMode($13);<br>
+    Repeat</font></p>
+  <blockquote>
+    <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">For
+      j:=0 to 199 do<br>
+      For i:=0 to 319 do</font></p>
+    <blockquote>
+      <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Pix(i,j,i+j+k);</font></p>
+    </blockquote>
+    <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Inc(K);</font></p>
+  </blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Until
+    Keypressed; <br>
+    Readkey;<br>
+    SetMode($3);</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End.</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">P.S. Так как мы
+  все делаем в модуле, я буду писать отдельные процедуры и ф-ции для модуля, дабы
+  сократить размер текста.</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br>
+  --------------------------------------------------------------------------------</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><b><a name="win"></a>Окна
+  (View port)</b></font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Еще одна штука,
+  которая нам может пригодиться, это вывод не на весь экран, а в окно (окно -
+  прямоугольная область экрана). При этом начало координат экрана переноситься
+  на начало окна, а вывод за его приделы не как не отражается на экране. Для вывода
+  в окно, нам нужно создать переменные задающие координаты окна, и дающие размер
+  окна, а также переменную флаг, которая будет говорить нам о том, что вывод производится
+  в окно. Еще нам придется немного дополнить процедуры PIX, GETPIX и CLS. </font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Unit
+  MYVGA;<br>
+  Interface</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Const<br>
+  .... Предыдущие константы .... </font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Var
+  <br>
+  .... Предыдущие переменные ....<br>
+  WLX,WLY:Integer; {Координаты левого верхнего угла окна}<br>
+  WHX,WHY:Integer; {Координаты правого нижнего угла окна}<br>
+  WXRES,WYRES:Integer; {Ширина и высота окна}<br>
+  WEnabled:Boolean; {Если True то вывод в окно}</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">....
+  Процедуры описанные ранее ...</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">
+  Procedure Pix(X,Y:Integer;Col:Byte); {Вывести точку}<br>
+  Procedure GetPix(X,Y:Integer):Byte; {Получить точку}<br>
+  Procedure Cls(Col:Byte); {Очистка экрана}</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">
+  Procedure SetWindow(X,Y,X1,Y1:Integer); {Установить вывод в окно}<br>
+  Procedure SetScreen; {Установить вывод на весь экран}<br>
+  Function MaxX:Integer; {Ширина окна или экрана} <br>
+  Function MaxY:Integer; {Высота окна или экрана} </font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Implementation</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Установить
+  вывод в окно}<br>
+  Procedure SetWindow(X,Y,X1,Y1:Integer); <br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">If
+    X&gt;X1 Then Begin WLX:=X1;WHX:=X End Else Begin WLX:=X;WHX:=X1 End;<br>
+    If Y&gt;Y1 Then Begin WLY:=Y1;WHY:=Y End Else Begin WLY:=Y;WHY:=Y1 End;<br>
+    WXres:=WHX-WLX+1;<br>
+    WYres:=WHY-WLY+1;<br>
+    WEnabled:=True;</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Установить
+  вывод на весь экран}<br>
+  Procedure SetScreen; <br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">WEnabled:=False;</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Ширина
+  окна или экрана} <br>
+  Function MaxX:Integer; <br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">If
+    Enabled Then MaxX:=WXres Else MaxX;=ScreenXres; </font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Высота
+  окна или экрана} <br>
+  Function MaxY:Integer; <br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">If
+    Enabled Then MaxY:=WYres Else MaxY;=ScreenYres;</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Очистка
+  экрана}<br>
+  Procedure Cls(Col:Byte);<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">If
+    WEnabled Then Begin</font></p>
+  <blockquote>
+    <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">WEnabled:=False;{Этот
+      маленький фокус поможет нам выиграть пару тактов у процессора}<br>
+      {Конечно грубо, но эффективно}<br>
+      For j:=WYL to WYH do<br>
+      For i:=WXL to WXH do<br>
+      Pix(i,j,Col);<br>
+      WEnabled:=True;</font></p>
+  </blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End
+    Else FillChar(Mem[VideoSeg:0],64000,Col);</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Рисуем
+  точку на экран}<br>
+  Procedure Pix(X,Y:Integer;Col:Byte);<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Проверяем,
+    а выводим ли мы в окно}<br>
+    if WEnabeld Then </font></p>
+  <blockquote>
+    <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Далее
+      смотри, а не выходим ли мы за рамки окна}<br>
+      If (Word(X)&lt;WXres) And (Word(Y)&lt;WYres) Then Begin</font></p>
+    <blockquote>
+      <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Если
+        нет, то пересчитываем координаты для экрана}<br>
+        Inc(X,WLX); <br>
+        Inc(Y,WLY);</font></p>
+    </blockquote>
+    <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End
+      Else Exit; {Иначе выходим из процедуры}</font></p>
+  </blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">If
+    (Word(X)&lt;ScreenXres) And (Word(Y)&lt;ScreenYres) Then <br>
+    Mem[VideoSeg:Y*320+X]:=Col;</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;
+  </font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Получаем
+  точку с экран}<br>
+  Function GetPix(X,Y:Integer):Byte;<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">if
+    WEnabeld Then <br>
+    If (Word(X)&lt;WXres) And (Word(Y)&lt;WYres) Then Begin</font></p>
+  <blockquote>
+    <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Inc(X,WLX);<br>
+      Inc(Y,WLY);</font></p>
+  </blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End
+    Else Exit;<br>
+    If (Word(X)&lt;ScreenXres) And (Word(Y)&lt;ScreenYres) Then <br>
+    GetPIx:=Mem[VideSeg:Y*320+X];</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1"><br>
+  .... Процедуры описанные ранее в которые не были внесены изменения ...<br>
+  Procedure SetMode(N:Byte); {Установка видео режима}<br>
+  Procedure NewB(P:Pointer); {Создать новый буфер в памяти}<br>
+  Procedure DelB(P:Pointer); {Удалить буфер из памяти}<br>
+  Procedure SetB(P:Pointer); {Установить вывод в буфер}<br>
+  Procedure SetS; {Установить вывод на экран}<br>
+  Procedure OutB(P:Pointer); {Вывести буфер на экран}<br>
+  Procedure GetB(P:Pointer); {Копировать экран в буфер}<br>
+  Procedure CopyBB(Src,Dest:Pointer); {Копировать буфер в буфер}</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">VideoSeg:=SegA000;
+    {Устанавливаем вывод на экран}</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End.</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">*********************************************************************************</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Program
+  Demo6;<br>
+  Uses MyVGA,CRT;<br>
+  Var <br>
+  Bufer:Pointer; {Переменная буфера}<br>
+  I,J,K:Integer; </font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">
+    Writeln('Вывод графики в окно');<br>
+    Readkey;<br>
+    SetMode($13);<br>
+    SetWindow(10,10,100,100);<br>
+    NewB(Bufer); {Создаем буфер в динамической памяти}<br>
+    SetB(Bufer); {Вывод в буфер}<br>
+    Repeat</font></p>
+  <blockquote>
+    <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">For
+      j:=0 to MaxY-1 do<br>
+      For i:=0 to MaxX-1 do</font></p>
+    <blockquote>
+      <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Pix(i+Trunc(Sin((j+k)*0.05)*20),j,i+j+k);</font></p>
+    </blockquote>
+    <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Inc(K);<br>
+      OutB(Bufer); {Выводим буфер на экран}</font></p>
+  </blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Until
+    Keypressed; <br>
+    DelB(Bufer); {Удаляем буфер из динамической памяти}<br>
+    SetS;<br>
+    Readkey;<br>
+    SetMode($3);</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End.</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><br>
+  --------------------------------------------------------------------------------</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1"><b><a name="pal"></a>Работа
+  с палитрой</b></font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">При работе с 256
+  цветовыми режимами или как это иногда называется 8 битной графикой, в нашем
+  распоряжении 256 цветов. При этом все это вместе называется палитрой. Оттенок
+  каждого цвета состоит из трех компонент RGB (Красный, Зеленый и Голубой) в пределе
+  от 0 до 63. Задать его можно двумя способами, через БИОС и через порты ($3C7,
+  $3C8, $3C9). Так как, через БИОС все работает почему-то тормазнуто, лучший сделать
+  все это через порты, пример чего я привожу ниже.</font></p>
+<p><font face="Verdana, Arial, Helvetica, sans-serif" size="1">Желательно эти
+  процедуры вставить в модуль MyVGA</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Процедура
+  установки RGB}<br>
+  Procedure SetRGB(N,R,G,B:Byte);<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Port[$3C8]:=N;
+    {В порт $3C8 посылаем номер цвета в палитре}<br>
+    Port[$3C9]:=R; {В порт $3C9 последовательно посылаем компоненты R, G, B}<br>
+    Port[$3C9]:=G;<br>
+    Port[$3C9]:=B;</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">{Получение
+  значений RGB для цвета N}<br>
+  Procedure SetRGB(N:Byte;Var R,G,B:Byte);<br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Port[$3C7]:=N;
+    {В порт $3C7 посылаем номер цвета в палитре}<br>
+    R:=Port[$3C9]; {Из порта $3C9 последовательно считываем компоненты R, G, B}<br>
+    G:=Port[$3C9];<br>
+    B:=Port[$3C9];</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End;</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">*********************************************************************************</font></p>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Program
+  Demo7;<br>
+  Uses MyVGA,CRT;<br>
+  {В MyVGA должны быть прописаны процедуры GetRGB и SetRGB}<br>
+  Var <br>
+  I,J,K:Integer; <br>
+  Begin</font></p>
+<blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Writeln('Пример
+    работы с палитрой');<br>
+    Readkey;<br>
+    SetMode($13);<br>
+    For j:=0 to MaxY-1 do<br>
+    For i:=0 to MaxX-1 do</font></p>
+  <blockquote>
+    <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Pix(i+Trunc(Sin((j+k)*0.05)*20),j,i+j+k);</font></p>
+  </blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Readkey;<br>
+    {Изменяем значения палитры}<br>
+    For i:=0 to 255 do</font></p>
+  <blockquote>
+    <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">SetRGB(i,i,i,0);</font></p>
+  </blockquote>
+  <p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">Readkey;<br>
+    SetMode($3);</font></p>
+</blockquote>
+<p><font color="#CCCCCC" face="Verdana, Arial, Helvetica, sans-serif" size="1">End.</font></p>
+<p></p>
+<p></p>
+<hr>
+
+</body>
+</html>

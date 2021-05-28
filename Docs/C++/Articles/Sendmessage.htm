@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Отправка сообщений объектам -> SendMessage</TITLE>
+</HEAD>
+<BODY BGCOLOR=ffffff>
+<H3>Пример отправки сообщений объектам - Прокрутка области ввода [SendMessage, PostMessage, SCROLL]</H3>
+<P ALIGN=JUSTIFY>К моему сожалению, не все возможности WinAPI воплощены в VCL. Поэтому иногда приходится прибегать к функциям WinAPI.
+Но иногда и в функциях не найдешь, то что нужно. Тогда последний вариант - сообщения.
+<BR>Сообщения могут рассылаться функциями SendMessage и PostMessage. Отличия между ними в том, что первая не возвращает результат, пока сообщение
+не будет обработано, а вторая возврашается сразу же.
+<BR>В этих функциях присутствуют параметры по порядку - оконный дескриптор, название сообщения, первый параметр, второй параметр. Параметры -
+указатели на структуры, или просто целые, в зависимости от типа сообщения.
+<BR>Необходимо отметить, что почти то же самое предоставляет метод Perform объектов TControl, только он действует именно на сам объект.
+<BR>Как пример. Иногда бывает необходимо послать окну сообщение прокрутиться, например, если это Memo. Для осуществления этой задачи в WinAPI
+довольно много есть сообщений всяких разных. Но для областей ввода - Edit Controls - лучше всего подходит сообщения EM_SCROLL, EM_SCROLLCARET,
+EM_LINESCROLL. Первая прокручивает по линии или по странице, вторая до выделенного места (и убирает выделение), третья вверх-вниз влево-вправо по
+символам.
+<P ALIGN=JUSTIFY>ПРИМЕР:<BR>
+Все компоненты знакомые, новых свойств нет. В свойство Lines для TMemo впечатан текст, чтобы было, что прокручивать. А ScrollBars я установил в ssBoth,
+чтобы было, чем прокручивать ;). Объекты я назвал соответственно их функции и написал такой код:
+<P><PRE>
+void __fastcall TForm1::ScrollCaretClick(TObject *Sender)
+{
+SendMessage(Memo1->Handle,EM_SCROLLCARET,0,0);
+}
+//---------------------------------------------------
+void __fastcall TForm1::LeftClick(TObject *Sender)
+{
+SendMessage(Memo1->Handle,EM_LINESCROLL,-1,0);
+}
+void __fastcall TForm1::RightClick(TObject *Sender)
+{
+SendMessage(Memo1->Handle,EM_LINESCROLL,1,0);
+}
+//-----------------------------------------------------
+void __fastcall TForm1::UpClick(TObject *Sender)
+{
+Memo1->Perform(EM_SCROLL,SB_LINEUP,0);
+}
+//-----------------------------------------------------
+void __fastcall TForm1::DownClick(TObject *Sender)
+{
+Memo1->Perform(EM_SCROLL,SB_LINEDOWN,0);
+}
+//-----------------------------------------------------
+</PRE>
+<P ALIGN=JUSTIFY>Половину я оформил как Perform, а другую половину - как SendMessage. Как видно, они по действию одинаковы. Но! Perform действует
+только на данный объект, а SendMessage на любой, чей HWND известен. Так что у каждого свои возможности. В листинге представлены варианты сообщений и
+аргументы к ним. Там, где значения wParam 1 и -1 - это прокрутка по горизонтали в разных направлениях.
+<P><BR>
+<H3>Работа с нестандартными сообщениями</H3>
+<P ALIGN=JUSTIFY>
+В VCL определены некоторые стандартные события для компонентов. Можно заметить, что эти события похожи на стандартные сообщения Windows.
+Однако не все сообщения Windows можно найти в VCL, и не все сообщения VCL реализованы в WinAPI. Например, в WinAPI нет сообщения, аналогичному
+OnClick, с другой стороны, в VCL нет события WM_DROPFILES, которое мы использовали в одном из предыдущих шагов.
+<BR>Стандартные сообщения компонентов наследуются по иерархии. Изначально каждое из сообщений базируется все же на сообщениях Windows.
+Чтобы поймать такое сообщение, необходимо создать таблицу откликов. Тот, кто работал с другими версиями библиотек под Windows, например, OWL
+или MFC знаком с такими таблицами. Например, OWL приложение создает таблицу типа DEFINE_RESPONSE_TABLE1, а MFC приложение -
+BEGIN_MESSAGE_MAP...END_MESSAGE_MAP. Сходным образом создаются таблицы и в C++Builder.
+<BR>В данном классе создается секция protected и в нее вписывается таблица откликов:
+<P><PRE>
+BEGIN_MESSAGE_MAP
+...
+MESSAGE_HANDLER(<сообщение Windows>, <тип сообщения>, <имя процедуры обработчика>)
+...
+END_MESSAGE_MAP(<класс-родитель>)
+</PRE>
+<P ALIGN=JUSTIFY>Процедура-обработчик должна быть перед этим определена как void &ltимя функции&gt(&ltтип сообщения&gt& Msg). Сообщения
+Windows можно посмотреть в MS SDK, а типы сообщений прописаны (если у Вас вариант Enterprise) в файле CBuilder5\Source\Vcl\messages.pas. В этой папке
+хранятся исходники VCL.
+<BR>Как пример можно привести такой вариант. В компонентах VCL не описано стандартное событие на нажатие правой кнопкой мыши. Вместо этого
+рекомендуется использовать TPopupMenu и OnContextPopup. Однако иногда необходимо само событие. В примере будут описаны события нажаттие правой
+кнопкой (RMouseDown), отпускание правой кнопки (RMouseUp), и собственно щелчок (RMouseClick).
+<P><PRE>
+//unit1.h----------------
+class TForm1 : public TForm
+{
+__published:	// IDE-managed Components
+        TLabel *Label1;
+private:
+public:		// User declarations
+        __fastcall TForm1(TComponent* Owner);
+
+protected:
+void __fastcall WmRButtonDown(TWMRButtonDown& Msg);
+void __fastcall WmRButtonUp(TWMRButtonUp& Msg);
+virtual void __fastcall RMouseClick(TObject* Sender);
+virtual void __fastcall RMouseDown(TObject* Sender);
+virtual void __fastcall RMouseUp(TObject* Sender);
+bool fMouseDown;
+BEGIN_MESSAGE_MAP
+MESSAGE_HANDLER(WM_RBUTTONDOWN,TWMRButtonDown,WmRButtonDown)
+MESSAGE_HANDLER(WM_RBUTTONUP,TWMRButtonUp,WmRButtonUp)
+END_MESSAGE_MAP(TForm);
+};
+
+//unit1.cpp----------------
+void __fastcall TForm1::WmRButtonDown(TWMRButtonDown& Msg)
+{
+fMouseDown=true;
+RMouseDown(this);
+}
+void __fastcall TForm1::WmRButtonUp(TWMRButtonUp& Msg)
+{
+if(fMouseDown)
+  {
+  RMouseClick(this);
+  fMouseDown=false;
+  };
+RMouseUp(this);
+}
+void __fastcall TForm1::RMouseClick(TObject* Sender)
+{
+Application->MessageBox("Right button clicked","Test",MB_OK);
+}
+
+void __fastcall TForm1::RMouseDown(TObject* Sender)
+{
+       //TODO: Add your source code here
+Label1->Caption="Right Button down";
+}
+       //TODO: Add your source code here
+void __fastcall TForm1::RMouseUp(TObject* Sender)
+{
+Label1->Caption="Right Button up";
+}
+</PRE>
+<P ALIGN=JUSTIFY>Здесь приведены и заголовочный и кодовый файлы. Таким образом разработчики компонентов определяют события для своих творений.
+Сначала вызывается WinAPI связанный метод объекта, который,в свою очередь, вызывает один из виртуальных методов, которые могут быть переопределены в
+потомках. В данном случае чисто демонстрационный пример выводит по щелчку окно сообщения, а Label1 отображает текущее состояние правой кнопки.
+</BODY>
+</HTML>

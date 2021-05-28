@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+</HEAD>
+<BODY BGCOLOR=ffffff>
+<H3>использование статических объектов</H3>
+<B><I>(существуют в одном экземпляре на всю программу)</B></I>
+<P><BR>
+<OL>
+<LI><B><I> Создаем класс для нужного объекта:</I></B>
+<P><B> xxx.h<BR></B>
+//---------------------------------------------------------------------------<BR>
+#ifndef GuideH<BR>
+#define GuideH<BR>
+//---------------------------------------------------------------------------<BR>
+#include &ltClasses.hpp&gt  // Для использования стандартных С++ - типов данных (типа AnsiString)<BR>
+#include &ltADODB.hpp&gt<BR>
+#include &ltDB.hpp&gt       // Для использования ссылок на объект ADO для доступа к базе данных<BR>
+//---------------------------------------------------------------------------<BR>
+class Guide<BR>
+{<BR>
+protected:<P>
+private:<P>
+public:<BR>
+        Guide(void);            // Констуктор класса<BR>
+        virtual ~Guide();       // Деструктор класса<P>
+        // Переменные<BR>
+        AnsiString NNN;<BR>
+        TADOQuery* AllCountries;        // Справочник<P>
+        // Функции<P>
+};<BR>
+//---------------------------------------------------------------------------<BR>
+#endif<BR>
+<P><B> xxx.cpp<BR></B>
+//---------------------------------------------------------------------------<BR>
+#pragma hdrstop<BR>
+#include "Guide.h"<BR>
+//---------------------------------------------------------------------------<BR>
+#pragma package(smart_init)<BR>
+//---------------------------------------------------------------------------<BR>
+Guide::Guide(void)<BR>
+{<BR>
+        // Конструктор класса<BR>
+NNN = "NIKKI";<P>
+CoInitialize(NULL);		// Для инициализации TADOQuery (можно использовать OleInitialize(NULL);)<BR>
+AllCountries = new TADOQuery(NULL);<BR>
+AllCountries->Close();<BR>
+AllCountries->ConnectionString = "Provider=SQLOLEDB.1;Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=innotec;Data Source=GYDRA";<BR>
+AllCountries->SQL->Clear();<BR>
+AllCountries->SQL->Add("SELECT xxx FROM xxx");<BR>
+try {<BR>
+        AllCountries->Open();       // AllCountries->ExecSQL();<BR>
+        }<BR>
+catch(...){<BR>
+        AllCountries->Close();<BR>
+        MessageBox(NULL,"Ошибка работы базы данных","ERROR",NULL);<BR>
+        }<BR>
+if(AllCountries->RecordCount==0) {<BR>
+        // Если ничего не выбрано<BR>
+        AllCountries->Close();<BR>
+        MessageBox(NULL,"Ничего не выбрано","ERROR",NULL);<BR>
+        }<BR>
+}<BR>
+//---------------------------------------------------------------------------<BR>
+Guide::~Guide()<BR>
+{<BR>
+        // Деструктор класса<BR>
+delete AllCountries;<BR>
+}<BR>
+//---------------------------------------------------------------------------<BR><P><BR><P>
+<LI><B><I> В классе основной формы, или в классе, где будет использоваться данный объект определить указатель (статический) на данный объект:</I></B><P>
+<P><B> Zaiavka.h<BR></B>
+#include &ltmemory&gt<BR>
+using namespace std;    // Подключение класса auto_ptr - чтобы иметь возможность правильно удалять статические объекты<BR>
+<P>
+class Zaiavka<BR>
+{<BR>
+protected:<BR>
+private:<BR>
+public:<BR>
+        Zaiavka(void);  // Констуктор класса<BR>
+        virtual ~Zaiavka();     // Деструктор класса<P>
+        static std::auto_ptr&ltGuide&gt Guides;<P>
+        // Функции<BR>
+};<P>
+<P><BR><P>
+<LI><B><I> До описания первой функции вставить переопределение указатели и создание объекта:</I></B><P>
+<P><B> Zaiavka.cpp<BR></B>
+...<BR>
+std::auto_ptr&ltGuide&gt Zaiavka::Guides(new Guide());      // Создать объект Guides - "Справочники"<BR>
+//---------------------------------------------------------------------------<BR>
+Zaiavka::Zaiavka(void)<BR>
+{<BR>
+...<BR>
+<LI><B><I>Статический объект Guides создается в самом начале программы до выполнения функции Main и удаляется по ее закрытии. Обращение к нему из любого класса программы через:</I></B><P>
+Zaiavka::Guides-> ...
+</OL>
+</BODY>
+</HTML>
